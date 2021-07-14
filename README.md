@@ -1,2 +1,4 @@
-# lab-lub-prova-js
-Neste repositório se encontra o código da minha prova realizada após a conclusão do curso JavaScript Ninja realizado através do programa LabLuby.
+# Gerador de apostas 
+Este projeto foi construido em JavaScript, HTML e CSS.
+
+Atualmente existem três opções de jogos para geração de numeros. São eles Lotofácil, Mega-Sena e Quina. Clicando em complete game a aplicação completa os aleatoriamente os números faltantes ou escolhe todos eles se nenhum nùmero for escolhido pelo usuário.
