@@ -70,18 +70,7 @@ body {
     margin-right: 15px;
     border: 2px solid;
 }
-.Mega-Sena:hover {
-    color: #fff !important;
-    background-color: #01ac66 !important;
-}
-.Quina:hover {
-    color: #fff !important;
-    background-color: #f79c31 !important;
-}
-.Lotofácil:hover {
-    color: #fff !important;
-    background-color: #7f3992 !important;
-}
+
 .bet {
     margin-top: 26px;
 }
@@ -164,16 +153,6 @@ button:disabled {
 }
 
 .cart {
-    /* position: relative;
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* width: 300px;
-    
-    
-    
-    margin-left: 150px;
-    
-     */
     width: 290px;
     height: 60vh;
     border-radius: 10px;

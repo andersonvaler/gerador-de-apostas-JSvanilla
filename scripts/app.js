@@ -12,10 +12,11 @@
 
     function App(games) {
         this.init = () => {
-            let defaultGame = this.handleGameData("Lotofácil");
+            let defaultGame = games[0];
             this.setEvents();
             this.renderGame(defaultGame);
             this.renderCart();
+            this.setGameButtons();
         };
 
         this.selectedNumbers = [];
@@ -28,10 +29,6 @@
                 $container.textContent = `*Complete o jogo!`;
             },
 
-            selectMoreNumbers: (num) => {
-                let $container = document.querySelector(".error-complete");
-                $container.textContent = `*Selecione ${num} numeros`;
-            },
             remove: () => {
                 let $number = document.querySelector(".error-complete");
                 let $cart = document.querySelector(".error-cart");
@@ -75,25 +72,44 @@
             $cartButton.addEventListener("click", this.addToCart, false);
         };
 
-        this.setGameButtonsColor = ($selected) => {
-            let $betButtons = document.querySelectorAll("#game-button");
+        this.setGameButtons = ($selected) => {
+            let $container = document.querySelector(".buttons-choose");
+            games.map((game) => {
+                let $current = document.createElement("buttons");
+                $current.className = game.type;
+                $current.textContent = game.type;
 
-            for (let i = 0; i < $betButtons.length; i++) {
-                let $current = $betButtons[i];
-
-                $current.style.color = this.handleGameData(
-                    $current.className
-                ).color;
-                $current.style.borderColor = this.handleGameData(
-                    $current.className
-                ).color;
+                $current.style.color = game.color;
+                $current.style.borderColor = game.color;
                 $current.style.backgroundColor = "#fff";
-            }
+                $current.style.border = `2px solid ${game.color}`;
+                $current.style.borderRadius = "100px";
+                $current.style.padding = "4px 10px";
+                $current.style.cursor = "pointer";
+                $current.style.marginRight = "5px";
+                $current.style.fontStyle = "italic";
+                $current.style.fontWeight = "500";
+                $current.addEventListener(
+                    "mouseover",
+                    () => {
+                        $current.style.backgroundColor = game.color;
+                        $current.style.color = "#fff";
+                    },
+                    false
+                );
+                $current.addEventListener(
+                    "mouseout",
+                    () => {
+                        $current.style.backgroundColor = "#fff";
+                        $current.style.color = game.color;
+                    },
+                    false
+                );
 
-            $selected.style.color = "#fff";
-            $selected.style.backgroundColor = this.handleGameData(
-                $selected.className
-            ).color;
+                $current.addEventListener("click", () => this.renderGame(game));
+
+                $container.appendChild($current);
+            });
         };
 
         this.renderGame = (gameData) => {
@@ -112,6 +128,7 @@
                 let $current = document.createElement("button");
                 $current.textContent = i < 10 ? `0${i}` : i;
                 $current.className = "number-button";
+                $current.id = i < 10 ? `0${i}` : i;
                 $current.addEventListener(
                     "click",
                     () => {
@@ -144,7 +161,6 @@
         };
 
         this.addToCart = () => {
-            this.msg.remove();
             if (this.completedGame) {
                 this.cart.push({
                     name: this.currentGame.type,
@@ -241,7 +257,7 @@
         };
 
         this.disableNumbers = () => {
-            this.msg.remove();
+            this.completedGame = true;
             let $numbersButtons = document.querySelectorAll(".number-button");
             for (let i = 0; i < $numbersButtons.length; i++) {
                 if ($numbersButtons[i].id != "selected") {
@@ -250,33 +266,39 @@
             }
         };
 
-        this.completeGame = (game) => {
-            this.msg.remove();
-            if (this.selectedNumbers.length < game["max-number"]) {
-                this.msg.selectMoreNumbers(game["max-number"]);
-            } else {
-                this.msg.remove();
-                this.completedGame = true;
-                let $numbersButtons =
-                    document.querySelectorAll(".number-button");
-                for (let i = 0; i < $numbersButtons.length; i++) {
-                    if ($numbersButtons[i].id != "selected") {
-                        $numbersButtons[i].style.display = "none";
-                    }
+        this.randomSelect = () => {
+            let dif =
+                this.currentGame["max-number"] - this.selectedNumbers.length;
+            let numbers = [];
+            while (numbers.length < dif) {
+                let number =
+                    Math.floor(Math.random() * this.currentGame.range) + 1;
+                number = number < 10 ? `0${number}` : number;
+                if (!this.selectedNumbers.includes(number)) {
+                    numbers.push(number);
+                    this.selectedNumbers.push(number);
                 }
             }
+            return numbers;
+        };
+
+        this.completeGame = (game) => {
+            this.selectedNumbers.length === game["max-number"] &&
+                this.clearGame();
+            this.msg.remove();
+            let random = this.randomSelect();
+            for (let i = 0; i < random.length; i++) {
+                let $current = document.getElementById(`${random[i]}`);
+                $current.id = "selected";
+                console.log($current);
+            }
+            this.completedGame = true;
+            this.disableNumbers();
         };
 
         this.clearGame = () => {
-            this.msg.remove();
+            this.renderGame(this.currentGame);
             this.completedGame = false;
-            let $numbersSelected = document.querySelectorAll(".number-button");
-            this.activeNumbers();
-            for (let i = 0; i < $numbersSelected.length; i++) {
-                $numbersSelected[i].removeAttribute("id");
-                $numbersSelected[i].style.display = "inline";
-            }
-            this.selectedNumbers = [];
         };
     }
 })();
